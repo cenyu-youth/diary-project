@@ -9,11 +9,21 @@ Vue.config.productionTip = false
 import 'lib-flexible/flexible'
 
 import {
-  Button
+  Button,
+  Divider,
+  Collapse,
+  CollapseItem,
+  Popup,
+  NavBar
 } from 'vant';
 
 Vue
-  .use(Button);
+  .use(Button)
+  .use(Divider)
+  .use(Collapse)
+  .use(CollapseItem)
+  .use(Popup)
+  .use(NavBar)
 
 new Vue({
   router,

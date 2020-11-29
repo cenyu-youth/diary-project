@@ -1,15 +1,23 @@
 <template>
   <div id="app">
+<!--    <div class="system"></div>-->
+
     <router-view/>
   </div>
 </template>
 
 <style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+
+  html,body{
+    height: 100%;
+    background: #fff;
+  }
+  .system{
+    width: 100%;
+    height: 24px;
+  }
+
+  #app {
+   height: 100%;
+  }
 </style>

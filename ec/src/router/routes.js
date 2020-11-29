@@ -2,16 +2,33 @@ import  {routesComponent} from "./routesComponent";
 
 export const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
-    component: routesComponent.home
+    component: routesComponent.home,
+    meta:{
+      title:'牛逼'
+    }
   },
   {
     path: '/about',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: routesComponent.about
+  },
+
+  {
+    path: '/login',
+    name: 'login',
+    component: routesComponent.login
+  },
+
+  {
+    path: '/registerregister',
+    name: 'register',
+    component: routesComponent.register
+  },
+
+  {
+    path:'*',
+    redirect:{name:'Home'}
   }
 ]
