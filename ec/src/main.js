@@ -3,8 +3,23 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import VueCookies from 'vue-cookies'
 
+import qs from 'qs'
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+Vue
+  .use(VueAxios,axios)
+  .use(qs)
+  .use(VueCookies)
+
+// this.$cookies.config('7d','/')
 Vue.config.productionTip = false
+
+//配置请求头
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 import 'lib-flexible/flexible'
 
@@ -14,7 +29,9 @@ import {
   Collapse,
   CollapseItem,
   Popup,
-  NavBar
+  NavBar,
+  Toast,
+  Dialog
 } from 'vant';
 
 Vue
@@ -22,8 +39,10 @@ Vue
   .use(Divider)
   .use(Collapse)
   .use(CollapseItem)
-  .use(Popup)
   .use(NavBar)
+  .use(Popup)
+  .use(Toast)
+  .use(Dialog)
 
 new Vue({
   router,

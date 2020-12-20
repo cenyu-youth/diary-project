@@ -1,6 +1,6 @@
 <template>
-    <div style="width:100%;height:calc(100% - 0.64rem);position: relative">
-
+    <div style="width:100%;height:100%;position: relative">
+    <div class="system"></div>
     <!--返回-->
     <div class="back-icon"></div>
     <!-- logo -->
@@ -11,27 +11,29 @@
     </div>
 
     <form class="form-box">
-       <div class="inp-box">
+
+
+      <div class="inp-box">
         <span class="inp-icon"></span>
-        <input type="text" class="inp" placeholder="手机号码" pla>
+        <input type="text" class="inp" v-model="regData.username" placeholder="账户名/昵称" pla>
       </div>
+
+       <div class="inp-box phone-inp">
+        <span class="inp-icon"></span>
+        <input type="text" class="inp" v-model="regData.phone" placeholder="手机号码" pla>
+       </div>
 
       <div class="inp-box pwd-inp">
         <span class="inp-icon"></span>
-        <input type="text" class="inp" placeholder="账户名" pla>
-      </div>
-
-      <div class="inp-box pwd-inp">
-        <span class="inp-icon"></span>
-        <input type="password" class="inp" placeholder="密码" pla>
+        <input type="password" class="inp" v-model="regData.pwd" placeholder="密码" pla>
       </div>
 
        <div class="inp-box pwd-inp">
         <span class="inp-icon"></span>
-        <input type="password" class="inp" placeholder="确认密码" pla>
+        <input type="password" class="inp" v-model="regData.rePwd" placeholder="确认密码" pla>
       </div>
 
-      <div class="submit-btn">注册</div>
+      <div class="submit-btn" @click="reg">注册</div>
     </form>
 
     <!--忘记密码 -- 注册账号 -->
@@ -45,12 +47,19 @@
 </template>
 
 <script>
+    import qs from 'qs'
     export default {
       name: "login",
       data(){
         return{
           activeNames: [],
-          isRotation:false
+          isRotation:false,
+          regData:{
+            username:'',
+            phone:'',
+            pwd:'',
+            rePwd:''
+          }
         }
       },
       methods:{
@@ -59,8 +68,65 @@
         },
 
         goState(o){
-          this.$router.push(o)
-    }
+          this.$router.replace(o)
+        },
+
+        inspect(o){
+
+          for(let i in o){
+            if(o[i] == '' || (i == 'rePwd' && o[i] != this.regData.pwd)){
+              return false
+            }
+          }
+
+          return true
+
+        },
+
+        //注册
+        reg(){
+          if(!this.inspect(this.regData)){
+            this.$toast({message: '输入不能为空'})
+            return;
+          }
+
+          let data = qs.stringify(this.regData)
+
+          this.axios({
+            method:'POST',
+            url:'http://192.168.43.10:8000/register',
+            data:data
+          }).then(result => {
+            let lin = result.data;
+
+            if(lin.code == 100){
+
+              this.regData = {
+                username:'',
+                phone:'',
+                pwd:'',
+                rePwd:''
+              }
+
+              this.$dialog.confirm({
+                title: '注册成功',
+                message: '是否立即去登录账号',
+              })
+                .then(() => {
+                  this.goState({name:'login'})
+                })
+                .catch(() => {
+
+                });
+
+              this.$cookies.set('tk',{text:lin._ttVc},'1d')
+            }else{
+              this.$toast({message:'账号已被注册'})
+            }
+
+          })
+
+        }
       },
       watch:{
         activeNames(newVlaue,oldValue){
@@ -108,7 +174,7 @@
   .form-box{
     margin-top: 30px;
   }
-   .inp-box{
+  .inp-box{
     width: 70%;
     height: 42px;
     line-height: 42px;
@@ -117,6 +183,12 @@
     margin: 0 auto;
     display: flex;
     overflow: hidden;
+  }
+  .phone-inp{
+    margin-top: 20px;
+    .inp-icon{
+      background: url("../../assets/logins/login/phone.png") no-repeat center center/24px 24px;
+    }
   }
   .inp-icon{
     display: flex;

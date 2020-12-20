@@ -1,6 +1,6 @@
 <template>
-  <div style="width:100%;height:calc(100% - 0.64rem);position: relative">
-
+  <div style="width:100%;height:100%;position: relative">
+    <div class="system"></div>
     <!--返回-->
     <div class="back-icon"></div>
     <!-- logo -->
@@ -13,15 +13,15 @@
     <form class="form-box">
       <div class="inp-box">
         <span class="inp-icon"></span>
-        <input type="text" class="inp" placeholder="手机号码/账号" pla>
+        <input type="text" class="inp" placeholder="手机号码/账号" v-model="loginData.username" />
       </div>
 
       <div class="inp-box pwd-inp">
         <span class="inp-icon"></span>
-        <input type="password" class="inp" placeholder="密码" pla>
+        <input type="password" class="inp" placeholder="密码" v-model="loginData.pwd" />
       </div>
 
-      <div class="submit-btn">登录</div>
+      <div class="submit-btn" @click="logins">登录</div>
     </form>
 
     <!--忘记密码 -- 注册账号 -->
@@ -55,13 +55,21 @@
 </template>
 
 <script>
+  import qs from 'qs'
     export default {
       name: "login",
       data(){
         return{
           activeNames: [],
-          isRotation:false
+          isRotation:false,
+          loginData:{
+            username:'',
+            pwd:''
+          }
         }
+      },
+      created() {
+
       },
       methods:{
         collOpations(){
@@ -69,8 +77,69 @@
         },
 
         goState(o){
-          this.$router.push(o)
-    }
+          this.$router.replace(o)
+        },
+
+        logins(){
+
+          if(this.loginData.username == '' || this.loginData.pwd == ''){
+            this.$toast({message: '输入不能为空'})
+            return;
+          }
+
+
+         // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRWMiLCJpYXQiOjE2MDc3NjY4MTksImV4cCI6MTYwNzg1MzIxOX0.UwrMQrm3If5FR9l6nzpWxPitN8IeTvPVgUEI2VHSIbs"
+
+          let token = this.$cookies.isKey('tk') ? this.$cookies.get('tk').text : null
+
+          let head =  token == null ? {} : {Authorization: token}
+
+        //序列化post请求参数
+        var paramsStr = qs.stringify(this.loginData);
+
+          this.axios({
+            headers:head,
+            method: 'POST',
+            url: 'http://192.168.43.10:8000/login',
+            // url: 'http://192.168.0.116/login',
+            data:paramsStr
+          }).then(result => {
+            console.log('result ==> ', result.data);
+
+            if(result.data.code == 200){
+              if(result.data._ttVc){
+                this.$cookies.set('tk',{text:result.data._ttVc},'7d')
+              }
+
+              this.$toast({message:'登录成功!'})
+
+              setTimeout(() => {
+                this.goState({name:'Home'})
+              })
+            }else if(result.data.code == -202){
+              this.$toast({message:"用户名或者密码不正确!"})
+            }
+
+          }).catch(err => {
+            console.log('err ==> ', err);
+          })
+        }
+
+        // this.axios({
+        //     headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        //     method: 'GET',
+        //     url: 'http://192.168.43.10:8000/',
+        //     params:{
+        //         username:'消费'
+        //     },
+        //     data:{}
+        //   }).then(result => {
+        //     console.log('result ==> ', result.data);
+        //   }).catch(err => {
+        //     console.log('err ==> ', err);
+        //   })
+        // }
+
       },
       watch:{
         activeNames(newVlaue,oldValue){
