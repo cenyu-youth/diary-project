@@ -29,12 +29,25 @@ UserLabel.init(
         },
         //用户唯一id
         userId: {
-          type: Sequelize.STRING(18),
+          type: Sequelize.STRING(30),
           allowNull: false,
           defaultValue: '',
           comment: '用户唯一id'
         },
-        laberContent: {
+        //便签唯一id
+        labelId: {
+          type: Sequelize.STRING(30),
+          allowNull: false,
+          defaultValue: '',
+          comment: '便签唯一id'
+        },
+         timeNum: {
+          type: Sequelize.STRING(30),
+          allowNull: false,
+          defaultValue: '',
+          comment: '操作的时间戳'
+        },
+        labelContent: {
           type: Sequelize.TEXT,
           allowNull: false,
           //默认值
@@ -48,6 +61,12 @@ UserLabel.init(
           defaultValue: 0,
           comment: '是否已完成，未完成为0，完成为1'
         },
+        tag: {
+          type: Sequelize.INTEGER(1),
+          allowNull: false,
+          defaultValue: 0,
+          comment: '标签'
+        }
     },{
         //模型名称
         modelName: 'userLabel',

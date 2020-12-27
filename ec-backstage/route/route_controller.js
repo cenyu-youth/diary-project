@@ -100,6 +100,111 @@ class  RouteController {
         })
 
     }
+
+    //添加便签
+    addLabel(req, res){
+
+        let data = req.body;
+
+        if(req.headers.authorization){
+            utils.validToken(req.headers.authorization,config.saltOptions.tokenSalt,(err, decode) => {
+                if(err){
+
+                    res.json({msg:'您未登录!',code:-200});
+
+                }else{
+                    console.info(decode.data)
+
+                    api.findData('user',
+                        {username:decode.data},
+                        ['userId']).then((findResult => {
+
+                            if(findResult.length <= 0){
+
+                                res.json({msg:'账号不存在',code:-202})
+
+                                return
+                            }
+
+                            let userId = findResult[0].dataValues.userId;
+
+                            let labelId = config.saltOptions.labelIdSalt + new Date().getTime();
+
+                            api.createData('userLabel',{
+                                userId:userId,
+                                labelId:labelId,
+                                labelContent:data.ct,
+                                tag:data.tag,
+                                isEnd:data.isEnd,
+                                timeNum:new Date().getTime()
+                            }).then(createResult => {
+
+                                console.info(createResult)
+
+                                res.json({msg:'保存成功',labelId:labelId,code:300})
+                            })
+
+                    }))
+
+                }
+            })
+        }else{
+            res.json({msg:'您还未登录',code:-200})
+        }
+    }
+
+    //查询标签
+    queryLabel(req, res){
+
+        if(req.headers.authorization){
+            utils.validToken(req.headers.authorization,config.saltOptions.tokenSalt,(err, decode) => {
+                if(err){
+
+                    res.json({msg:'您未登录!',code:-200});
+
+                }else{
+
+                    api.findData('user',
+                        {username:decode.data},
+                        ['userId']).then((findResult => {
+
+                             if(findResult.length <= 0){
+
+                                res.json({msg:'账号不存在',code:-202})
+
+                                return
+                            }
+
+                            api.findData('userLabel',{
+                                userId:findResult[0].dataValues.userId,
+                                isEnd:{
+                                    $or: {
+                                      $lt: 0,
+                                      $eq: 1
+                                    }
+                                  }
+                            },['labelId','labelContent','tag','timeNum']).then(findLabelResult => {
+
+                                if(findLabelResult.length <= 0){
+                                    res.json({msg:'没有数据',code:-303});
+                                    return;
+                                }
+
+
+
+                                // console.info(findLabelResult)
+
+                                res.json({msg:'请求成功',findLabelResult,code:310})
+                            })
+
+                    }))
+
+                }
+            })
+        }else{
+            res.json({msg:'您还未登录',code:-200})
+        }
+    }
 }
 
 //导出RouteController实例

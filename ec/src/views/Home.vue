@@ -5,7 +5,7 @@
     <div class="tp-nav">
       <van-nav-bar :style="{backgroundColor: '#FCFCFC'}">
          <template #left>
-           <i class="menu-icon" @click="switchLeft"></i>
+           <i class="menu-icon" @click="switchLeft({name:'noJust'})"></i>
          </template>
         <template #right>
           <div class="date-box" @click="goState({name:'login'})">
@@ -27,60 +27,64 @@
       </div>
 
 <!--      日记卡片-->
-      <div class="card-box" v-for="(item,index) in cardData"
-           :key="index"
-           :style="{
-             top:cardPi[index].y + 'px',
-             left:cardPi[index].x + 'px',
-             zIndex:cardPi[index].z,
-             opacity:cardPi[index].o,
-             transform:'scale(' + cardPi[index].s +')'
-           }">
+      <div class="center">
+        <div style="position: relative;width: 100%;height: 100%">
+          <div class="card-box" v-for="(item,index) in cardData"
+               :key="index"
+               :style="{
+                 top:cardPi[index].y + 'px',
+                 left:cardPi[index].x + 'px',
+                 zIndex:cardPi[index].z,
+                 opacity:cardPi[index].o,
+                 transform:'scale(' + cardPi[index].s +')'
+               }">
 
-<!--        顶部图片-->
-        <div class="tp-img">
-          <img :src="item.url" alt="">
-        </div>
+    <!--        顶部图片-->
+            <div class="tp-img">
+              <img :src="item.url" alt="">
+            </div>
 
-        <!--日期 -- 心情 -- 天气-->
-        <div class="time-mood-weather">
+            <!--日期 -- 心情 -- 天气-->
+            <div class="time-mood-weather">
 
-          <div class="time-box"><span>{{item.date.day}}</span> {{item.date.mon}} {{item.date.year}}</div>
+              <div class="time-box"><span>{{item.date.day}}</span> {{item.date.mon}} {{item.date.year}}</div>
 
-          <div class="mood-weather">
-            <div class="mood-box" :style="{backgroundImage: 'url(' + item.mood + ')'}"></div>
-            <div class="weather-box" :style="{backgroundImage: 'url(' + item.weather + ')'}"></div>
+              <div class="mood-weather">
+                <div class="mood-box" :style="{backgroundImage: 'url(' + item.mood + ')'}"></div>
+                <div class="weather-box" :style="{backgroundImage: 'url(' + item.weather + ')'}"></div>
+              </div>
+
+            </div>
+
+    <!--        文章标题-->
+            <div class="chapter-box">{{item.title}}</div>
+
+    <!--        内容-->
+            <div class="content-box">
+              <p class="van-multi-ellipsis--l3">{{item.content[0]}}</p>
+              <p class="van-multi-ellipsis--l3">{{item.content[1]}}</p>
+              <p>......</p>
+            </div>
+
+    <!--        底部标识-->
+            <div class="location-time">
+
+    <!--          坐标位置图标-->
+              <div class="lt-box">
+                <i></i>
+                {{item.location}}
+              </div>
+
+    <!--          右边时间标识-->
+              <div class="rt-box">
+                <i></i>
+                {{item.date.time}}
+              </div>
+
+            </div>
+
           </div>
-
         </div>
-
-<!--        文章标题-->
-        <div class="chapter-box">{{item.title}}</div>
-
-<!--        内容-->
-        <div class="content-box">
-          <p class="van-multi-ellipsis--l3">{{item.content[0]}}</p>
-          <p class="van-multi-ellipsis--l3">{{item.content[1]}}</p>
-          <p>......</p>
-        </div>
-
-<!--        底部标识-->
-        <div class="location-time">
-
-<!--          坐标位置图标-->
-          <div class="lt-box">
-            <i></i>
-            {{item.location}}
-          </div>
-
-<!--          右边时间标识-->
-          <div class="rt-box">
-            <i></i>
-            {{item.date.time}}
-          </div>
-
-        </div>
-
       </div>
 
     </div>
@@ -88,13 +92,13 @@
 
 <!--    底部功能区-->
     <div class="bt-box">
-      <i class="jilu"></i>
+      <i class="jilu" @click="goState({name:'writeLabel'})"></i>
       <i class="pen"></i>
     </div>
 
 
 <!--    左边侧导航栏-->
-    <van-popup v-model="show" position="left" :style="{ height: '100%' }" :close-on-popstate="true">
+    <van-popup v-model="show" position="left" :style="{ height: '100%' }" :close-on-popstate="true" :transition-appear="true">
       <div class="nav-box">
           <div class="nav-layer">
 
@@ -114,7 +118,7 @@
             <van-divider :style="{backgroundColor:'#E3E3E3',height: '2px',margin:'10px 0'}" />
 
             <div class="opations-box">
-              <div class="opations" v-for="(item,index) in navData" :key="index" @click="switchLeft">
+              <div class="opations"  v-for="(item,index) in navData" :key="index" @click="switchLeft({name:item.path})">
                 <i :style="{backgroundImage:'url('+item.url+')'}"></i>
                 {{item.text}}
               </div>
@@ -274,8 +278,8 @@
       }
     }
     .card-box{
-      width: calc(100% - 10px);
-      height: calc(100% - 90px);
+      width: 100%;
+      height: 100%;
       padding:5px;
       box-shadow: 0 0 10px 1px #ccc;
       position: absolute;
@@ -372,11 +376,24 @@
         }
       }
     }
+    .center{
+      width: calc(100% - 10px);
+      height: calc(100% - 90px);
+      max-height: 480px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
   }
 </style>
 
 <script>
   import qs from 'qs'
+
+  import {mapState, mapActions} from 'vuex'
+
+
   export default {
     name:'home',
     data(){
@@ -389,45 +406,53 @@
         navData:[
           {
             url:require('../assets/home/moon_circle.png'),
+            path:'',
             text:'时间轴'
           },
           {
             url:require('../assets/home/jilu.png'),
+            path:'label',
             text:'备忘录'
           },
           {
             url:require('../assets/home/riji.png'),
+            path:'',
             text:'日记本'
           },
           {
             url:require('../assets/home/laji.png'),
+            path:'',
             text:'回收站'
           },
           {
             url:require('../assets/home/caogao.png'),
+            path:'',
             text:'草稿箱'
           },
           {
             url:require('../assets/home/plan.png'),
+            path:'',
             text:'日记广场'
           },
           {
             url:require('../assets/home/yejian.png'),
+            path:'',
             text:'夜间模式'
           },
           {
             url:require('../assets/home/opations.png'),
+            path:'',
             text:'设置'
           }
 
         ],
         cardPi:[
-          {x:0,y:50,z:7,s:1,o:1},
-          {x:0,y:80,z:6,s:0.9,o:0.8},
-          {x:0,y:110,z:5,s:0.8,o:0.6},
-          {x:0,y:110,z:4,s:0.8,o:0.6},
-          {x:0,y:110,z:3,s:0.8,o:0.6},
-          {x:0,y:110,z:2,s:0.8,o:0.6}
+          {x:0,y:0,z:7,s:1,o:1},
+          {x:0,y:30,z:6,s:0.9,o:0.8},
+          {x:0,y:60,z:5,s:0.8,o:0.6},
+          {x:0,y:60,z:4,s:0.8,o:0.6},
+          {x:0,y:60,z:3,s:0.8,o:0.6},
+          {x:0,y:60,z:2,s:0.8,o:0.6}
         ],
         cardData:[
           {
@@ -687,8 +712,17 @@
       goState(o){
         this.$router.push(o)
       },
-      switchLeft(){
+      switchLeft(o){
+
+        if(o.name != 'noJust'){
+
+          this.goState(o)
+        }
+
+
         this.show = !this.show
+
+
 
         let back = document.querySelectorAll('.van-overlay')[0]
 

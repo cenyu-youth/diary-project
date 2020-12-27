@@ -21,6 +21,10 @@
 
     global.config = require(__basename + '/config/config.js')
 
+    //操作数据库
+
+    global.api = require(__basename + '/api/api.js')
+
     //POST请求体解析
     global.bodyParser = require('body-parser')
 
@@ -60,7 +64,7 @@
 
     app.use((req, res) => {
         res.status = 404;
-        res.send('找不到资源')
+        res.send({msg:'找不到资源',code:404})
     })
 
     app.use((err, req, res) => {

@@ -35,7 +35,7 @@
 
           if(result.data.code == 201){
 
-            this.$toast({message:'登录成功!'})
+            // this.$toast({message:'登录成功!'})
 
             console.info('token自动登录成功')
 
@@ -47,6 +47,8 @@
           console.log('err ==> ', err);
         })
       }else{
+        this.$toast({message:'您还未登录!'})
+
         this.$router.push({name:'login'})
       }
 

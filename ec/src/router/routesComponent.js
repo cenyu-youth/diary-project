@@ -15,6 +15,15 @@ class RoutesComponent {
     return import('../views/Logins/Register.vue')
   }
 
+  writeLabel(){
+    return import('../views/Label/WriteLabel.vue')
+  }
+
+  label(){
+    return import('../views/Label/Label.vue')
+  }
+
+
 }
 
 export const routesComponent = new RoutesComponent();

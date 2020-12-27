@@ -31,7 +31,11 @@ import {
   Popup,
   NavBar,
   Toast,
-  Dialog
+  Dialog,
+  DropdownMenu,
+  DropdownItem,
+  Popover,
+  Loading
 } from 'vant';
 
 Vue
@@ -43,9 +47,18 @@ Vue
   .use(Popup)
   .use(Toast)
   .use(Dialog)
+  .use(DropdownMenu)
+  .use(DropdownItem)
+  .use(Popover)
+  .use(Loading)
 
 new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+router.beforeEach((to,from,next)=>{
+
+  next()
+})

@@ -12,5 +12,7 @@ exports.saltOptions = {
   //用户名登录加盐
   userLoginSalt: 'eeec',
 
-  tokenSalt:'EcEC'
+  tokenSalt:'EcEC',
+
+  labelIdSalt:'EcEcccLabel'
 }

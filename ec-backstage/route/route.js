@@ -16,4 +16,8 @@ module.exports = app => {
     //注册接口
     app.post('/register',routeController.register);
 
+    app.post('/addLabel',routeController.addLabel)
+
+    app.get('/queryLabel',routeController.queryLabel)
+
 }

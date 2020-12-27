@@ -88,14 +88,13 @@
           }
 
 
-         // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRWMiLCJpYXQiOjE2MDc3NjY4MTksImV4cCI6MTYwNzg1MzIxOX0.UwrMQrm3If5FR9l6nzpWxPitN8IeTvPVgUEI2VHSIbs"
 
           let token = this.$cookies.isKey('tk') ? this.$cookies.get('tk').text : null
 
           let head =  token == null ? {} : {Authorization: token}
 
-        //序列化post请求参数
-        var paramsStr = qs.stringify(this.loginData);
+          //序列化post请求参数
+          var paramsStr = qs.stringify(this.loginData);
 
           this.axios({
             headers:head,
@@ -108,7 +107,10 @@
 
             if(result.data.code == 200){
               if(result.data._ttVc){
-                this.$cookies.set('tk',{text:result.data._ttVc},'7d')
+
+                alert(result.data._ttVc)
+
+                this.$cookies.set('tk',result.data._ttVc,'7d','/')
               }
 
               this.$toast({message:'登录成功!'})
@@ -124,21 +126,6 @@
             console.log('err ==> ', err);
           })
         }
-
-        // this.axios({
-        //     headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        //     method: 'GET',
-        //     url: 'http://192.168.43.10:8000/',
-        //     params:{
-        //         username:'消费'
-        //     },
-        //     data:{}
-        //   }).then(result => {
-        //     console.log('result ==> ', result.data);
-        //   }).catch(err => {
-        //     console.log('err ==> ', err);
-        //   })
-        // }
 
       },
       watch:{

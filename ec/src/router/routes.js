@@ -22,10 +22,24 @@ export const routes = [
   },
 
   {
-    path: '/registerregister',
+    path: '/register',
     name: 'register',
     component: routesComponent.register
   },
+
+  {
+    path: '/WriteLabel',
+    name: 'writeLabel',
+    component: routesComponent.writeLabel
+  },
+
+  {
+    path: '/label',
+    name: 'label',
+    component: routesComponent.label
+  },
+
+
 
   {
     path:'*',
